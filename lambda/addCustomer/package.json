@@ -1,0 +1,9 @@
+{
+	"name": "add-customer-function",
+	"version": "0.1.0",
+	"dependencies": {
+		"@aws-sdk/client-dynamodb": "^3.395.0",
+		"@aws-sdk/lib-dynamodb": "^3.395.0",
+		"uuid": "^9.0.0"
+	}
+}
