@@ -10,6 +10,7 @@ export class AddCustomer extends Construct {
 
 		const customerTable = new dynamodb.Table(this, "customers", {
 			partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
+			removalPolicy: cdk.RemovalPolicy.DESTROY,
 		});
 		this.handler = new lambda.Function(this, "addCustomerHandler", {
 			runtime: lambda.Runtime.NODEJS_18_X,
