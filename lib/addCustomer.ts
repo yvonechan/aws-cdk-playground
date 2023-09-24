@@ -5,21 +5,23 @@ import { Construct } from "constructs";
 
 export class AddCustomer extends Construct {
 	public readonly handler: lambda.Function;
+	public readonly customerTable: dynamodb.Table;
 	constructor(scope: Construct, id: string, props?: cdk.StackProps) {
 		super(scope, id);
 
-		const customerTable = new dynamodb.Table(this, "customers", {
+		this.customerTable = new dynamodb.Table(this, "customers", {
 			partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
 			removalPolicy: cdk.RemovalPolicy.DESTROY,
+			stream: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
 		});
 		this.handler = new lambda.Function(this, "addCustomerHandler", {
 			runtime: lambda.Runtime.NODEJS_18_X,
 			handler: "index.handler",
 			code: lambda.Code.fromAsset("lambda/addCustomer"),
 			environment: {
-				CUSTOMERS_TABLE_NAME: customerTable.tableName,
+				CUSTOMERS_TABLE_NAME: this.customerTable.tableName,
 			},
 		});
-		customerTable.grantReadWriteData(this.handler);
+		this.customerTable.grantReadWriteData(this.handler);
 	}
 }
